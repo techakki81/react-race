@@ -1,20 +1,34 @@
 import './App.css';
 import {useState,useEffect} from 'react'
 
+
+
 function App() {
 
   const [country, setCountry] = useState('N.A.')
   const [capital, setCapital] = useState('Berlin')
 
-let cancelled = false
+  //step 2
+   let ctrl = new AbortController()
 const loadData = async ()=>{
-  
-      const response = await fetch(`https://restcountries.eu/rest/v2/capital/${capital}`)
-      const jsonObj = await response.json()            
-      setTimeout( ()=> {                       
-                         if(!cancelled)
-                          setCountry(jsonObj[0].name)
-                      } , Math.random()*10000)
+      //step 2 . Move everything to the setTimeout. show the error. 
+
+      //step 3. put an async in the setTimeout. But there is an error 
+
+      //step4 , put a try catch
+      
+
+      setTimeout( async()=> {  
+                  try{                         
+                        const response = await fetch(`https://restcountries.eu/rest/v2/capital/${capital}`, {signal:ctrl.signal})
+                        const jsonObj = await response.json()                    
+                        setCountry(jsonObj[0].name)
+                  }
+                  catch(err)
+                  {
+                    console.log(err)
+                  }
+               } , Math.random()*10000)
       
     }
 
@@ -24,7 +38,9 @@ useEffect(() => {
    loadData();
     // clean up function.
    return () => {
-        cancelled = true
+      //step 2
+      ctrl.abort()
+        
    }
 }, [capital])
 
